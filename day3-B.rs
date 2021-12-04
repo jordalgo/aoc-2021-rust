@@ -15,35 +15,17 @@ fn get_next_vec(lines: &Vec<String>, position: usize, most: bool) -> Vec<String>
   }
   let ones_len = ones.len();
   let zeroes_len = zeroes.len();
-  if ones_len >= zeroes_len {
-    if most {
-      if ones_len == 1 {
-        return ones;
-      } else {
-        return get_next_vec(&ones, position + 1, most);
-      }
-    } else {
-      if zeroes_len == 1 {
-        return zeroes;
-      } else {
-        return get_next_vec(&zeroes, position + 1, most);
-      }
-    }
+  let use_ones = if most { ones_len >= zeroes_len } else { zeroes_len > ones_len };
+
+  if use_ones {
+    if ones_len == 1 { ones } else { get_next_vec(&ones, position + 1, most) }
   } else {
-    if most {
-      if zeroes_len == 1 {
-        return zeroes;
-      } else {
-        return get_next_vec(&zeroes, position + 1, most);
-      }
-    } else {
-      if ones_len == 1 {
-        return ones;
-      } else {
-        return get_next_vec(&ones, position + 1, most);
-      }
-    }
+    if zeroes_len == 1 { zeroes } else { get_next_vec(&zeroes, position + 1, most) }
   }
+}
+
+fn get_decimal(lines: &Vec<String>) -> isize {
+  return isize::from_str_radix(lines.get(0).unwrap(), 2).unwrap();
 }
 
 fn main() {
@@ -56,14 +38,8 @@ fn main() {
         }
     }
 
-    let oxygen = get_next_vec(&vec, 0, true);
-    let oxygen_decimal = isize::from_str_radix(oxygen.get(0).unwrap(), 2).unwrap();
-    // println!("oxygen {}", oxygen_decimal);
-
-    let scrubber = get_next_vec(&vec, 0, false);
-    let scrubber_decimal = isize::from_str_radix(scrubber.get(0).unwrap(), 2).unwrap();
-    // println!("scrubber {}", scrubber_decimal);
-
+    let oxygen_decimal = get_decimal(&get_next_vec(&vec, 0, true));
+    let scrubber_decimal = get_decimal(&get_next_vec(&vec, 0, false));
     println!("total {}", scrubber_decimal * oxygen_decimal);
 }
 
